@@ -33,11 +33,18 @@ extern "C" fn main() -> ! {
 
     DISPCNT.write(DisplayControl::new().with_show_bg0(true));
 
+    for (i, &c) in b"Pre  VBlankIntrWait".iter().enumerate() {
+        screenblock
+            .get(5 + i, 5)
+            .unwrap()
+            .write(TextEntry::from_tile(c.into()));
+    }
+
     loop {
         // wait for vblank, update graphics afterwards
         VBlankIntrWait();
 
-        for (i, &c) in b"Hello".iter().enumerate() {
+        for (i, &c) in b"Post VBlankIntrWait".iter().enumerate() {
             screenblock
                 .get(5 + i, 5)
                 .unwrap()
