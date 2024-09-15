@@ -1,0 +1,24 @@
+[tasks.build]
+command = "cargo"
+args = ["build", "--release"]
+
+[tasks.objcopy]
+dependencies = ["build"]
+command = "arm-none-eabi-objcopy"
+args = ["-O", "binary", "target/thumbv4t-none-eabi/release/gba-test", "target/gba-test.gba"]
+
+[tasks.gbafix]
+dependencies = ["objcopy"]
+command = "gbafix"
+args = ["target/gba-test.gba"]
+
+[tasks.build-all]
+dependencies = ["build", "objcopy", "gbafix"]
+
+[tasks.run]
+dependencies = ["build-all"]
+command = "mgba-qt"
+args = ["-C", "logToStdout=1", "-C", "logLevel.gba.debug=127", "target/gba-test.gba"]
+
+[tasks.default]
+alias = "build-all"
